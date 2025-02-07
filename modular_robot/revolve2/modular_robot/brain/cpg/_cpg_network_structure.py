@@ -135,6 +135,62 @@ class CpgNetworkStructure:
         return self.make_connection_weights_matrix(
             internal_connection_weights, external_connection_weights
         )
+    
+    # ARON'S ADDITION
+    def make_connection_weights_matrix_sensory_feedback(
+        self,
+        external_connection_weights: dict[CpgPair, float],
+    ) -> npt.NDArray[np.float_]:
+        """
+        Create a weight matrix from internal and external weights.
+
+        :param internal_connection_weights: The internal weights.
+        :param external_connection_weights: The external weights.
+        :returns: The created matrix.
+        """
+        state_size = self.num_cpgs * 2
+
+        assert set(external_connection_weights.keys()) == self.connections
+
+        weight_matrix = np.zeros((state_size, state_size))
+
+        for cpg_pair, weight in external_connection_weights.items():
+            weight_matrix[cpg_pair.cpg_index_lowest.index][
+                cpg_pair.cpg_index_highest.index
+            ] = weight
+            weight_matrix[cpg_pair.cpg_index_highest.index][
+                cpg_pair.cpg_index_lowest.index
+            ] = -weight
+
+        return weight_matrix
+    
+    # ARON'S ADDITION
+    def make_W(
+        self, params: list[float]
+    ) -> npt.NDArray[np.float_]:
+        """
+        Create a list of intrinsic frequencies from the provided parameters.
+
+        :param params: The parameters to use for the intrinsic frequencies.
+        :returns: The list of intrinsic frequencies.
+        """
+        assert len(params) == self.num_cpgs
+
+        return np.array(params)
+    
+    # ARON'S ADDITION
+    def make_A(
+        self, params: list[float]
+    ) -> npt.NDArray[np.float_]:
+        """
+        Create a list of amplitudes from the provided parameters.
+
+        :param params: The parameters to use for the amplitudes.
+        :returns: The list of amplitudes.
+        """
+        assert len(params) == self.num_cpgs
+
+        return np.array(params)
 
     @property
     def num_states(self) -> int:

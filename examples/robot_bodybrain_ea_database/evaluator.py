@@ -1,7 +1,9 @@
 """Evaluator class."""
+import os
 from revolve2.ci_group import fitness_functions, terrains
 from revolve2.ci_group.morphological_measures import MorphologicalMeasures
 from revolve2.ci_group.behavioral_measures import BehavioralMeasures
+from revolve2.ci_group.simulation_parameters import make_standard_batch_parameters
 from revolve2.simulation.simulator import BatchParameters
 from revolve2.simulation.simulator import RecordSettings
 from revolve2.modular_robot import ModularRobot
@@ -77,6 +79,65 @@ class Evaluator:
         else:
             raise ValueError(f"Unknown fitness function: {fitness_function}")
 
+    def get_morphological_measures(self, robots: list[ModularRobot]) -> dict:
+        """
+        Goal:
+            Get the morphological measures of a list of robots.
+        -------------------------------------------------------------------------------------------
+        Input:
+            robot: The robots to get the morphological measures of.
+        -------------------------------------------------------------------------------------------
+        Output:
+            The morphological measures of the robots.
+        """
+        morphological_measures = []
+        for robot in robots:
+            morphological_measure = MorphologicalMeasures(robot.body, robot.brain, int(os.environ["MAXPARTS"]))
+            prop_Niels = morphological_measure.proportionNiels
+            prop_2d = morphological_measure.proportion_2d
+            single_neighbor_brick_ratio = morphological_measure.single_neighbour_brick_ratio
+            single_neighbour_ratio = morphological_measure.single_neighbour_ratio
+            double_neigbour_brick_and_active_hinge_ratio = morphological_measure.double_neigbour_brick_and_active_hinge_ratio
+            
+            # three measures are created from the length of limbs
+            length_of_limbsNiels = morphological_measure.length_of_limbsNiels
+            """
+            "Attachment Length Max", "Attachment Length Mean", "Attachment Length Std",
+            """
+            attachment_length_max = length_of_limbsNiels[0]
+            attachment_length_mean = length_of_limbsNiels[1]
+            attachment_length_std = length_of_limbsNiels[2]
+
+            joint_brick_ratio = morphological_measure.joint_brick_ratio
+
+            # two measures are created from the symmetry measure
+            symmetry = morphological_measure.symmetry
+            symmetry_incl_sum = sum(symmetry[0])
+            symmetry_excl_sum = sum(symmetry[1])
+
+            coverage = morphological_measure.coverage
+            branching = morphological_measure.branching
+            surface = morphological_measure.surface
+
+            morphological_measure = {"proportion_Niels": prop_Niels,
+                                        "proportion_2d": prop_2d,
+                                        "single_neighbor_brick_ratio": single_neighbor_brick_ratio,
+                                        "single_neighbour_ratio": single_neighbour_ratio,
+                                           "double_neigbour_brick_and_active_hinge_ratio": double_neigbour_brick_and_active_hinge_ratio,
+                                        "attachment_length_max": attachment_length_max,
+                                        "attachment_length_mean": attachment_length_mean,
+                                        "attachment_length_std": attachment_length_std,
+                                        "joint_brick_ratio": joint_brick_ratio,
+                                        "symmetry_incl_sum": symmetry_incl_sum,
+                                        "symmetry_excl_sum": symmetry_excl_sum,
+                                        "coverage": coverage,
+                                        "branching": branching, 
+                                        "surface": surface}
+            
+            morphological_measures.append(morphological_measure)                                                       
+
+        return morphological_measures
+
     def evaluate(
         self,
         robots: list[ModularRobot],
@@ -125,9 +186,10 @@ class Evaluator:
 
         # ---- Get Morphological Measures
         behavioral_measures, ids = [], []
+        morphological_measures = self.get_morphological_measures(robots)
         for irobot, robot in enumerate(robots):
             # ---- Morphological measures
-            #morphological_measures = MorphologicalMeasures(robot.body, robot.brain, int(os.environ["MAXPARTS"]))
+            morphological_measure = MorphologicalMeasures(robot.body, robot.brain, int(os.environ["MAXPARTS"]))
             ids.append(robot.brain.id_string)
             # ---- Behavioral Measures
             # States
@@ -136,7 +198,7 @@ class Evaluator:
             for variable, valuevar in vars(behave).items():
                 if variable not in ["states", "robot"]:
                     behavioral_measures[-1][variable] = valuevar
-              
+       
         # ---- Calculate the fitnesses.
         if self.fitness_function == "xy_displacement":
             fitnesses = [
@@ -158,4 +220,20 @@ class Evaluator:
                 for behavioral_measure in behavioral_measures
             ]
         
-        return fitnesses, behavioral_measures, ids
+        x_coordinates = [
+            fitness_functions.get_x(
+                state.get_modular_robot_simulation_state(robot)
+            )
+            for robot, scene in zip(robots, scene_states)
+            for state in scene
+        ]
+
+        y_coordinates = [
+            fitness_functions.get_y(
+                state.get_modular_robot_simulation_state(robot)
+            )
+            for robot, scene in zip(robots, scene_states)
+            for state in scene
+        ]
+
+        return fitnesses, behavioral_measures, ids, x_coordinates, y_coordinates, morphological_measures

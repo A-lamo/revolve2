@@ -7,11 +7,12 @@ from revolve2.simulation.simulator import Batch, Simulator
 
 from ._simulate_manual_scene import simulate_manual_scene
 
-if os.environ["RERUN"] == "True":
-    from ._simulate_scene_rerun import simulate_scene
-elif os.environ["RERUN"] == "False":
-    from ._simulate_scene import simulate_scene
+# if os.environ["RERUN"] == "True":
+#     from ._simulate_scene_rerun import simulate_scene
+# elif os.environ["RERUN"] == "False":
+#     from ._simulate_scene import simulate_scene
 
+from ._simulate_scene import simulate_scene
 
 class LocalSimulator(Simulator):
     """Simulator using MuJoCo."""

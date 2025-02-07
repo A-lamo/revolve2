@@ -12,6 +12,7 @@ def all() -> list[BodyV2]:
     """
     return [
         gecko_v2(),
+        my_baby_v2()
     ]
 
 
@@ -57,4 +58,10 @@ def gecko_v2() -> BodyV2:
         BrickV2(0.0)
     )
 
+    return body
+
+def my_baby_v2() -> BodyV2:
+    body = BodyV2()
+
+    body.core_v2.right_face.bottom = ActiveHingeV2(0.0)
     return body

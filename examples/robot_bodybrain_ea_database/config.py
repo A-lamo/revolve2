@@ -2,14 +2,14 @@
 import os 
 
 DATABASE_FILE = os.environ["DATABASE_FILE"]
-NUM_REPETITIONS = 2 #20#5
+NUM_REPETITIONS = 10 #20#5
 NUM_SIMULATORS = os.cpu_count()
-POPULATION_SIZE = 100
-OFFSPRING_SIZE = 50
+POPULATION_SIZE = 10
+OFFSPRING_SIZE = 5
 if os.environ["MODE"] == "random search":
     NUM_GENERATIONS = 50
 elif os.environ["MODE"] == "evolution":
-    NUM_GENERATIONS = 600
+    NUM_GENERATIONS = 150
 else:
     raise ValueError("MODE must be either random search or evolution")
 
@@ -27,7 +27,7 @@ else:
     raise ValueError("ALGORITHM must be either GRN or CPPN")
 
 TERRAIN = "flat" # "tilted
-FITNESS_FUNCTION = "x_speed_Miras2021" # "x_efficiency"# "xy_displacement"
+FITNESS_FUNCTION = "xy_displacement" # "x_efficiency"# "xy_displacement"
 
 
 ZDIRECTION = False # Whether to evolve in the z-direction.
@@ -53,10 +53,10 @@ assert SIMULATION_TIME == 30, "SIMULATION_TIME must be 30"
 if os.environ["MODE"] == "random search":
     assert NUM_GENERATIONS == 50, "NUM_GENERATIONS must be 50 if MODE is random search"
 elif os.environ["MODE"] == "evolution":
-    assert NUM_GENERATIONS == 600, "NUM_GENERATIONS must be 150 if MODE is evolution"
+    assert NUM_GENERATIONS == 150, "NUM_GENERATIONS must be 150 if MODE is evolution"
 
-assert POPULATION_SIZE == 100, "POPULATION_SIZE must be 100"
-assert OFFSPRING_SIZE == 50, "OFFSPRING_SIZE must be 50"
+assert POPULATION_SIZE == 10, "POPULATION_SIZE must be 100"
+assert OFFSPRING_SIZE == 5, "OFFSPRING_SIZE must be 50"
 assert NPARENTS == 2, "NPARENTS must be 2"
 assert PARENT_TOURNAMENT_SIZE == 4, "PARENT_TOURNAMENT_SIZE must be 4"
 assert SURVIVOR_TOURNAMENT_SIZE == 4, "SURVIVOR_TOURNAMENT_SIZE must be 4"

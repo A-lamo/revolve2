@@ -91,6 +91,7 @@ class Evaluator:
             batch_parameters=make_standard_batch_parameters(),
             scenes=scenes,
         )
+        print("X-STATES : ", [dir(states[0].get_modular_robot_simulation_state(robot)) for robot, states in zip(robots, scene_states)])
 
         # Calculate the xy displacements.
         xy_displacements = [

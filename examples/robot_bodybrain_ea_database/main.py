@@ -157,7 +157,22 @@ def select_survivors(
                 efficiency_median = original_population.individuals[i].efficiency_median, efficiency_75 = original_population.individuals[i].efficiency_75,
                 efficiency_max = original_population.individuals[i].efficiency_max, efficiency_std = original_population.individuals[i].efficiency_std,
                 
-                balance = original_population.individuals[i].balance, body_id = original_population.individuals[i].body_id
+                balance = original_population.individuals[i].balance, body_id = original_population.individuals[i].body_id,
+                proportion_2d = original_population.individuals[i].proportion_2d, proportion_Niels = original_population.individuals[i].proportion_Niels,
+                single_neighbor_brick_ratio = original_population.individuals[i].single_neighbor_brick_ratio,
+                single_neighbour_ratio = original_population.individuals[i].single_neighbour_ratio,
+                double_neigbour_brick_and_active_hinge_ratio = original_population.individuals[i].double_neigbour_brick_and_active_hinge_ratio,
+                attachment_length_max = original_population.individuals[i].attachment_length_max,
+                attachment_length_mean = original_population.individuals[i].attachment_length_mean,
+                attachment_length_std = original_population.individuals[i].attachment_length_std,
+                joint_brick_ratio = original_population.individuals[i].joint_brick_ratio,
+                symmetry_incl_sum = original_population.individuals[i].symmetry_incl_sum,
+                symmetry_excl_sum = original_population.individuals[i].symmetry_excl_sum,
+                coverage = original_population.individuals[i].coverage,
+                branching = original_population.individuals[i].branching,
+                surface = original_population.individuals[i].surface
+
+
             )
             for i in original_survivors
         ]
@@ -197,7 +212,21 @@ def select_survivors(
                 efficiency_median = offspring_population.individuals[i].efficiency_median, efficiency_75 = offspring_population.individuals[i].efficiency_75,
                 efficiency_max = offspring_population.individuals[i].efficiency_max, efficiency_std = offspring_population.individuals[i].efficiency_std,
 
-                balance = offspring_population.individuals[i].balance, body_id = offspring_population.individuals[i].body_id
+                balance = offspring_population.individuals[i].balance, body_id = offspring_population.individuals[i].body_id,
+
+                proportion_2d = offspring_population.individuals[i].proportion_2d, proportion_Niels = offspring_population.individuals[i].proportion_Niels,
+                single_neighbor_brick_ratio = offspring_population.individuals[i].single_neighbor_brick_ratio,
+                single_neighbour_ratio = offspring_population.individuals[i].single_neighbour_ratio,
+                double_neigbour_brick_and_active_hinge_ratio = offspring_population.individuals[i].double_neigbour_brick_and_active_hinge_ratio,
+                attachment_length_max = offspring_population.individuals[i].attachment_length_max,
+                attachment_length_mean = offspring_population.individuals[i].attachment_length_mean,
+                attachment_length_std = offspring_population.individuals[i].attachment_length_std,
+                joint_brick_ratio = offspring_population.individuals[i].joint_brick_ratio,
+                symmetry_incl_sum = offspring_population.individuals[i].symmetry_incl_sum,
+                symmetry_excl_sum = offspring_population.individuals[i].symmetry_excl_sum,
+                coverage = offspring_population.individuals[i].coverage,
+                branching = offspring_population.individuals[i].branching,
+                surface = offspring_population.individuals[i].surface
             )
             for i in offspring_survivors
         ]
@@ -336,7 +365,7 @@ def run_experiment(dbengine: Engine, iexp: int) -> None:
             initial_genotypes = [
                 Genotype.random(
                     innov_db_brain = innov_db_brain,
-                    rng = rng, include_bias = config.CPPNBIAS,
+                    rng = rng, include_bias = config.CPPNBIAS
                 )
                 for _ in range(config.POPULATION_SIZE)
             ]
@@ -345,7 +374,8 @@ def run_experiment(dbengine: Engine, iexp: int) -> None:
         # Evaluate the initial population.
         logging.info("Evaluating initial population.")
         robots = develop_robots(initial_genotypes)
-        initial_fitnesses, behavioral_measures, initial_ids = evaluator.evaluate(robots)
+        initial_fitnesses, behavioral_measures, initial_ids, x, y, morphological_measures = evaluator.evaluate(robots)
+
 
         # Create a population of individuals, combining genotype with fitness.
         population = Population(
@@ -383,10 +413,25 @@ def run_experiment(dbengine: Engine, iexp: int) -> None:
                     efficiency_median = behave_measure["efficiency_median"], efficiency_75 = behave_measure["efficiency_75"],
                     efficiency_max = behave_measure["efficiency_max"], efficiency_std = behave_measure["efficiency_std"],
                     
-                    balance = behave_measure["balance"], body_id = body_id 
+                    balance = behave_measure["balance"], body_id = body_id,
+
+                    proportion_2d = morph_measure["proportion_2d"], proportion_Niels = morph_measure["proportion_Niels"],
+                    single_neighbor_brick_ratio = morph_measure["single_neighbor_brick_ratio"],
+                    single_neighbour_ratio = morph_measure["single_neighbour_ratio"],
+                    double_neigbour_brick_and_active_hinge_ratio = morph_measure["double_neigbour_brick_and_active_hinge_ratio"],
+                    attachment_length_max = morph_measure["attachment_length_max"],
+                    attachment_length_mean = morph_measure["attachment_length_mean"],
+                    attachment_length_std = morph_measure["attachment_length_std"],
+                    joint_brick_ratio = morph_measure["joint_brick_ratio"],
+                    symmetry_incl_sum = morph_measure["symmetry_incl_sum"],
+                    symmetry_excl_sum = morph_measure["symmetry_excl_sum"],
+                    coverage = morph_measure["coverage"],
+                    branching = morph_measure["branching"],
+                    surface = morph_measure["surface"]
+
                     )
-                for genotype, fitness, behave_measure, body_id in zip(
-                    initial_genotypes, initial_fitnesses, behavioral_measures, initial_ids, strict=True
+                for genotype, fitness, behave_measure, body_id, morph_measure in zip(
+                    initial_genotypes, initial_fitnesses, behavioral_measures, initial_ids, morphological_measures, strict=True
                 )
             ]
         )
@@ -458,7 +503,7 @@ def run_experiment(dbengine: Engine, iexp: int) -> None:
             raise ValueError("ALGORITHM must be either GRN or CPPN")
         # Evaluate the offspring.
         robots = develop_robots(offspring_genotypes)
-        offspring_fitnesses, offspring_behavioral_measures, offspring_ids = evaluator.evaluate(
+        offspring_fitnesses, offspring_behavioral_measures, offspring_ids, x, y, morphological_measures = evaluator.evaluate(
             robots)
 
         # Make an intermediate offspring population.
@@ -497,8 +542,25 @@ def run_experiment(dbengine: Engine, iexp: int) -> None:
                     efficiency_median = behave_measure["efficiency_median"], efficiency_75 = behave_measure["efficiency_75"],
                     efficiency_max = behave_measure["efficiency_max"], efficiency_std = behave_measure["efficiency_std"],
                     
-                    balance = behave_measure["balance"], body_id = body_id)
-                for genotype, fitness, behave_measure, body_id in zip(offspring_genotypes, offspring_fitnesses, offspring_behavioral_measures, offspring_ids)
+                    balance = behave_measure["balance"], body_id = body_id,
+
+                    proportion_2d = morph_measure["proportion_2d"], proportion_Niels = morph_measure["proportion_Niels"],
+                    single_neighbor_brick_ratio = morph_measure["single_neighbor_brick_ratio"],
+                    single_neighbour_ratio = morph_measure["single_neighbour_ratio"],
+                    double_neigbour_brick_and_active_hinge_ratio = morph_measure["double_neigbour_brick_and_active_hinge_ratio"],
+                    attachment_length_max = morph_measure["attachment_length_max"],
+                    attachment_length_mean = morph_measure["attachment_length_mean"],
+                    attachment_length_std = morph_measure["attachment_length_std"],
+                    joint_brick_ratio = morph_measure["joint_brick_ratio"],
+                    symmetry_incl_sum = morph_measure["symmetry_incl_sum"],
+                    symmetry_excl_sum = morph_measure["symmetry_excl_sum"],
+                    coverage = morph_measure["coverage"],
+                    branching = morph_measure["branching"],
+                    surface = morph_measure["surface"]                
+                    )
+
+                for genotype, fitness, behave_measure, body_id, morph_measure in 
+                zip(offspring_genotypes, offspring_fitnesses, offspring_behavioral_measures, offspring_ids, morphological_measures, strict=True)
             ]
         )
 

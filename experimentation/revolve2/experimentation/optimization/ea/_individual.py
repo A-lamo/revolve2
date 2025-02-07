@@ -268,13 +268,62 @@ class Individual(HasId, orm.MappedAsDataclass, Generic[TGenotype]):
         def body_id(cls) -> orm.Mapped[str]:
             return cls.__behavioral_measures_impl()
         
+        #Morhological measures
+        @orm.declared_attr
+        def proportion_Niels(cls) -> orm.Mapped[float]:
+            return cls.__morphological_measures_impl()
         
-    
-    
-    
-
-    
-
+        @orm.declared_attr
+        def proportion_2d(cls) -> orm.Mapped[float]:
+            return cls.__morphological_measures_impl()
+        
+        @orm.declared_attr
+        def single_neighbor_brick_ratio(cls) -> orm.Mapped[float]:
+            return cls.__morphological_measures_impl()
+        
+        @orm.declared_attr
+        def single_neighbour_ratio(cls) -> orm.Mapped[float]:
+            return cls.__morphological_measures_impl()
+        
+        @orm.declared_attr
+        def double_neigbour_brick_and_active_hinge_ratio(cls) -> orm.Mapped[float]:
+            return cls.__morphological_measures_impl()
+                
+        @orm.declared_attr
+        def attachment_length_max(cls) -> orm.Mapped[float]:
+            return cls.__morphological_measures_impl()
+        
+        @orm.declared_attr
+        def attachment_length_mean(cls) -> orm.Mapped[float]:
+            return cls.__morphological_measures_impl()
+        
+        @orm.declared_attr
+        def attachment_length_std(cls) -> orm.Mapped[float]:
+            return cls.__morphological_measures_impl()
+        
+        @orm.declared_attr
+        def joint_brick_ratio(cls) -> orm.Mapped[float]:
+            return cls.__morphological_measures_impl()
+        
+        @orm.declared_attr
+        def symmetry_incl_sum(cls) -> orm.Mapped[float]:
+            return cls.__morphological_measures_impl()
+        
+        @orm.declared_attr
+        def symmetry_excl_sum(cls) -> orm.Mapped[float]:
+            return cls.__morphological_measures_impl()
+        
+        @orm.declared_attr
+        def coverage(cls) -> orm.Mapped[float]:
+            return cls.__morphological_measures_impl()
+        
+        @orm.declared_attr
+        def branching(cls) -> orm.Mapped[float]:
+            return cls.__morphological_measures_impl()
+        
+        @orm.declared_attr
+        def surface(cls) -> orm.Mapped[float]:
+            return cls.__morphological_measures_impl()
 
     __type_tgenotype: ClassVar[Type[TGenotype]]  # type: ignore[misc]
     __population_table: ClassVar[str]
@@ -334,3 +383,7 @@ class Individual(HasId, orm.MappedAsDataclass, Generic[TGenotype]):
     @classmethod
     def __behavioral_measures_impl(cls) -> orm.Mapped[float]:
         return orm.mapped_column(nullable=False)    
+
+    @classmethod
+    def __morphological_measures_impl(cls) -> orm.Mapped[float]:
+        return orm.mapped_column(nullable=False)

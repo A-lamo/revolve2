@@ -62,11 +62,11 @@ def run_experiment(dbengine: Engine) -> None:
     )
 
     # Initial parameter values for the brain.
-    initial_mean = cpg_network_structure.num_connections * [0.5]
+    initial_mean = [.025 for i in range(len(cpg_network_structure.cpgs)*3)]
 
     # Initialize the cma optimizer.
     options = cma.CMAOptions()
-    options.set("bounds", [-1.0, 1.0])
+    options.set("bounds", [0, .025])
     options.set("seed", rng_seed)
     opt = cma.CMAEvolutionStrategy(initial_mean, config.INITIAL_STD, options)
 

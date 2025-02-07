@@ -7,7 +7,8 @@ import numpy as np
 import os
 from base import Base
 
-from revolve2.ci_group.genotypes.cppnwin.modular_robot import BrainGenotypeCpgOrm
+# change BrainGenotypeCpgOrm to BrainGenotypeCpgOrmFish if you want to use BrainGenotypeCpgOrmFish
+from revolve2.ci_group.genotypes.cppnwin.modular_robot import BrainGenotypeCpgOrmFish as BrainGenotypeCpgOrm
 if os.environ["ALGORITHM"] == "GRN":
     from revolve2.ci_group.genotypes.cppnwin.modular_robot.v2 import BodyGenotypeOrmV2GRN
 elif os.environ["ALGORITHM"] in ["GRN_system"]:

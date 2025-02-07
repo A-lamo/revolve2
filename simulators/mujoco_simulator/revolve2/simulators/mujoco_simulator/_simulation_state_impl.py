@@ -25,7 +25,7 @@ class SimulationStateImpl(SimulationState):
     _sensordata: npt.NDArray[np.float_]
     _actuator_force: npt.NDArray[np.float_]
     _abstraction_to_mujoco_mapping: AbstractionToMujocoMapping
-
+        
     def __init__(
         self,
         data: mujoco.MjData,

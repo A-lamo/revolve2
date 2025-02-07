@@ -9,7 +9,8 @@ from revolve2.ci_group import fitness_functions, terrains
 from revolve2.ci_group.simulation_parameters import make_standard_batch_parameters
 from revolve2.modular_robot import ModularRobot
 from revolve2.modular_robot.body.base import ActiveHinge, Body
-from revolve2.modular_robot.brain.cpg import BrainCpgNetworkStatic, CpgNetworkStructure
+from revolve2.modular_robot.brain.cpg import CpgNetworkStructure
+from revolve2.modular_robot.brain.cpg._brain_cpg_network_static_fish import BrainCpgNetworkStaticFish
 from revolve2.modular_robot_simulation import (
     ModularRobotScene,
     Terrain,
@@ -68,10 +69,10 @@ class Evaluator:
         robots = [
             ModularRobot(
                 body=self._body,
-                brain=BrainCpgNetworkStatic.uniform_from_params(
+                brain=BrainCpgNetworkStaticFish.uniform_from_params(
                     params=params,
                     cpg_network_structure=self._cpg_network_structure,
-                    initial_state_uniform=math.pi / 2.0,
+                    initial_state_uniform=.1,
                     output_mapping=self._output_mapping,
                 ),
             )

@@ -5,6 +5,23 @@ import math
 import numpy as np
 from revolve2.modular_robot_simulation import ModularRobotSimulationState
 
+# def xy_displacement(
+#     begin_state: ModularRobotSimulationState, end_state: ModularRobotSimulationState
+# ) -> float:
+#     """
+#     Calculate the distance traveled on the xy-plane by a single modular robot.
+
+#     :param begin_state: Begin state of the robot.
+#     :param end_state: End state of the robot.
+#     :returns: The calculated fitness.
+#     """
+#     begin_position = begin_state.get_pose().position
+#     end_position = end_state.get_pose().position
+#     return math.sqrt(
+#         (begin_position.x - end_position.x) ** 2
+#         + (begin_position.y - end_position.y) ** 2
+#    )
+
 
 def xy_displacement(x_distance: float, y_distance: float) -> float:
     """
@@ -73,3 +90,23 @@ def x_efficiency(xbest: float, eexp: float, simulation_time: float) -> float:
     battery = -bmet * simulation_time + food(xbest, bmet) - scale_EEXP(eexp, bmet)
     
     return battery
+
+
+# ARON'S ADDITION
+def get_x(state: ModularRobotSimulationState) -> float:
+    """
+    Get the x position of a single modular robot.
+
+    :param state: State of the robot.
+    :returns: The x position.
+    """
+    return state.get_pose().position.x
+# ARON'S ADDITION
+def get_y(state: ModularRobotSimulationState) -> float:
+    """
+    Get the x position of a single modular robot.
+
+    :param state: State of the robot.
+    :returns: The x position.
+    """
+    return state.get_pose().position.y

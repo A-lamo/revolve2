@@ -3,7 +3,7 @@
 # Set algorithm, mode and file name from command line arguments.
 import os
 import sys
-
+import seaborn as sns
 algo = sys.argv[1]
 mode = sys.argv[2]
 file_name = "nan.sqlite"
@@ -44,7 +44,7 @@ def main(column, path) -> None:
         if file.endswith(".sqlite"):
             print(file)
             # Open database
-            dbengine = open_database_sqlite(folder_path + "\\" + file, open_method=OpenMethod.OPEN_IF_EXISTS)
+            dbengine = open_database_sqlite(folder_path + "/" + file, open_method=OpenMethod.OPEN_IF_EXISTS)
 
             # Get pandas data
             df_sub = select_data(dbengine, column)
@@ -101,6 +101,11 @@ def main(column, path) -> None:
         f"max_{column}_std",
         f"mean_{column}_mean",
         f"mean_{column}_std", ]
+    
+    # Set up the color palette
+    palette = sns.color_palette("bright", n_colors=len(df["experiment_id"].unique()))
+    color_max = palette[0]
+    color_mean = palette[-1]
 
     plt.figure()
 
@@ -138,7 +143,7 @@ def main(column, path) -> None:
 
     plt.xlabel("Generation Index", fontweight = "bold", size = 16)
     plt.ylabel(column.title(), fontweight = "bold", size = 16)
-    plt.title(f"{column.title()}", fontweight = "bold", size = 16)
+    # plt.title(f"{column.title()}", fontweight = "bold", size = 16)
     plt.legend()
     plt.grid()
     plt.tight_layout()
@@ -146,13 +151,13 @@ def main(column, path) -> None:
     plt.show()
 
     if column == "fitness":
-        for exp_id in df["experiment_id"].unique():
+        for exp_id, color in zip(df["experiment_id"].unique(), palette):
             df_exp = df.loc[df["experiment_id"] == exp_id, :]
             df_exp = df_exp.groupby("generation_index").agg({column: "mean"}).reset_index()
-            plt.plot(df_exp["generation_index"], df_exp[column], label = f"Experiment {exp_id}")
+            plt.plot(df_exp["generation_index"], df_exp[column], color = color)
         plt.xlabel("Generation Index", fontweight = "bold", size = 16)
         plt.ylabel(column.title(), fontweight = "bold", size = 16)
-        plt.title(f"{column.title()}", fontweight = "bold", size = 16)
+        # plt.title(f"{column.title()}", fontweight = "bold", size = 16)
         plt.legend()
         plt.grid()
         plt.tight_layout()
@@ -202,8 +207,12 @@ if __name__ == "__main__":
                 "efficiency", "efficiency_min", "efficiency_25", "efficiency_mean", "efficiency_median",
                 "efficiency_75", "efficiency_max", "efficiency_std",
 
-                "balance"]
-
+                "balance", "proportion_2d", "proportion_Niels", "single_neighbor_brick_ratio",
+                "single_neighbour_ratio", "double_neigbour_brick_and_active_hinge_ratio",
+                "attachment_length_max", "attachment_length_mean", "attachment_length_std",
+                "joint_brick_ratio", "symmetry_incl_sum", "symmetry_excl_sum", "coverage",
+                "branching", "surface"]
+    
     # If folder does not exist, create it
     path = f"C:\\Users\\niels\\OneDrive\\Documenten\\GitHub\\revolve2\\Test\\{os.environ['ALGORITHM']}\\BehavioralMeasures\\plots"
     if not os.path.exists(path):

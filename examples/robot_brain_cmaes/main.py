@@ -59,7 +59,6 @@ def main() -> None:
 
         # Get the sampled solutions(parameters) from cma.
         solutions = opt.ask()
-
         # Evaluate them. Invert because fitness maximizes, but cma minimizes.
         fitnesses = -evaluator.evaluate(solutions)
 
