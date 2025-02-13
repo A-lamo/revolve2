@@ -6,7 +6,7 @@ from PyQt5.QtWidgets import (
 from parsing import (get_functions_from_file, get_config_parameters_from_file, 
                      save_config_parameters, get_selection_names_from_init, get_files_from_path)
 import subprocess
-
+import os
 
 class RobotEvolutionGUI(QMainWindow):
     def __init__(self):
@@ -33,6 +33,12 @@ class RobotEvolutionGUI(QMainWindow):
         self.selection_functions = get_selection_names_from_init()
 
         self.database_path = "../resources/databases/"
+
+        if not os.path.exists(self.database_path):
+            os.makedirs(self.database_path)
+            print(f"Folder '{self.database_path}' created successfully.")
+        else:
+            pass
 
         # # Step 1: Define Robot Phenotypes
         # self.tab_widget.addTab(self.create_phenotype_tab(), "Robot Phenotypes")
