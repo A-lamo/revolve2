@@ -1,4 +1,4 @@
-#!/home/aronf/thesis/please-for-fucks-sake/revolve2/.venv/bin/python3.11
+#!/home/aronf/Desktop/EvolutionaryComputing/aron/thesis/revolve2/.venv/bin/python3.11
 # -*- coding: utf-8 -*-
 import re
 import sys

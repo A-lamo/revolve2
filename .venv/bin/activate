@@ -35,11 +35,11 @@ deactivate () {
 # unset irrelevant variables
 deactivate nondestructive
 
-VIRTUAL_ENV="/home/aronf/thesis/please-for-fucks-sake/revolve2/.venv"
+VIRTUAL_ENV=/home/aronf/Desktop/EvolutionaryComputing/aron/thesis/revolve2/.venv
 export VIRTUAL_ENV
 
 _OLD_VIRTUAL_PATH="$PATH"
-PATH="$VIRTUAL_ENV/bin:$PATH"
+PATH="$VIRTUAL_ENV/"bin":$PATH"
 export PATH
 
 # unset PYTHONHOME if set
@@ -52,9 +52,9 @@ fi
 
 if [ -z "${VIRTUAL_ENV_DISABLE_PROMPT:-}" ] ; then
     _OLD_VIRTUAL_PS1="${PS1:-}"
-    PS1="(.venv) ${PS1:-}"
+    PS1='(.venv) '"${PS1:-}"
     export PS1
-    VIRTUAL_ENV_PROMPT="(.venv) "
+    VIRTUAL_ENV_PROMPT='(.venv) '
     export VIRTUAL_ENV_PROMPT
 fi
 

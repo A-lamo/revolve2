@@ -1,3 +1,7 @@
+# Virtual Environment
+.venv
+
+
 # Experiment files
 **/log.txt
 *.sqlite
