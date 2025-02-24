@@ -103,6 +103,32 @@ class CpgNetworkStructure:
 
         return weight_matrix
 
+    def make_W(
+        self, params: list[float]
+    ) -> npt.NDArray[np.float_]:
+        """
+        Create a list of intrinsic frequencies from the provided parameters.
+
+        :param params: The parameters to use for the intrinsic frequencies.
+        :returns: The list of intrinsic frequencies.
+        """
+        assert len(params) == self.num_cpgs
+
+        return np.array(params)
+    
+    def make_A(
+        self, params: list[float]
+    ) -> npt.NDArray[np.float_]:
+        """
+        Create a list of amplitudes from the provided parameters.
+
+        :param params: The parameters to use for the amplitudes.
+        :returns: The list of amplitudes.
+        """
+        assert len(params) == self.num_cpgs
+
+        return np.array(params)
+
     @property
     def num_connections(self) -> int:
         """
